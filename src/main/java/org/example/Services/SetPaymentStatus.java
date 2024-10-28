@@ -8,6 +8,8 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import org.example.Models.FoodOrder;
+import org.example.UtilityServices.MongoDBService;
+import org.example.UtilityServices.RedisService;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
