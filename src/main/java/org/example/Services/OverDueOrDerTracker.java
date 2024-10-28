@@ -35,7 +35,8 @@ public class OverDueOrDerTracker implements Runnable{
     }
 
     public void checkAndModifyStatusToOverdue(){
-        List<FoodOrder> foodOrderList = mongoDBService.getOrderByStatus("pending");
+    //    List<FoodOrder> foodOrderList = mongoDBService.getOrderByStatus("pending");
+        List<FoodOrder> foodOrderList = mongoDBService.getOrderWithEmptyOrderEndTime();
 
         for(FoodOrder foodOrder: foodOrderList){
             Duration duration = Duration.between(foodOrder.getOrderTime(), LocalDateTime.now());

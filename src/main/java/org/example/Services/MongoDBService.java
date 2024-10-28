@@ -31,7 +31,9 @@ public class MongoDBService {
                 .append("dishes",foodOrder.getDishes())
                 .append("status",foodOrder.getStatus())
                 .append("orderTime",foodOrder.getOrderTime() == null ? null : foodOrder.getOrderTime().toString())
-                .append("orderEndTime",foodOrder.getOrderEndTime() == null ? null : foodOrder.getOrderEndTime().toString());
+                .append("orderEndTime",foodOrder.getOrderEndTime() == null ? null : foodOrder.getOrderEndTime().toString())
+                .append("paymentAmount",foodOrder.getPaymentAmount())
+                .append("paymentMethod",foodOrder.getPaymentMethod());
     }
 
     public void addOrder(FoodOrder foodOrder) {
@@ -49,6 +51,8 @@ public class MongoDBService {
         foodOrder.setStatus(doc.getString("status"));
         foodOrder.setOrderTime(formatDateTime(doc.getString("orderTime")));
         foodOrder.setOrderEndTime(formatDateTime(doc.getString("orderEndTime")));
+        foodOrder.setPaymentAmount(doc.getDouble("paymentAmount"));
+        foodOrder.setPaymentMethod(doc.getString("paymentMethod"));
         return foodOrder;
     }
 
@@ -85,6 +89,20 @@ public class MongoDBService {
     public List<FoodOrder> getOrderByStatus(String status) {
         List<FoodOrder> foodOrderArrayList = new ArrayList<>();
         MongoCursor<Document> cursor = collection.find(Filters.eq("status", status)).iterator();
+        try {
+            while (cursor.hasNext()) {
+                Document doc = cursor.next();
+                foodOrderArrayList.add(documentToFoodOrder(doc));
+            }
+        } finally {
+            cursor.close();
+        }
+        return foodOrderArrayList;
+    }
+
+    public List<FoodOrder> getOrderWithEmptyOrderEndTime() {
+        List<FoodOrder> foodOrderArrayList = new ArrayList<>();
+        MongoCursor<Document> cursor = collection.find(Filters.eq("orderEndTime", null)).iterator();
         try {
             while (cursor.hasNext()) {
                 Document doc = cursor.next();

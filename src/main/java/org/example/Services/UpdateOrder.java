@@ -10,6 +10,7 @@ import com.rabbitmq.client.DeliverCallback;
 import org.example.Models.FoodOrder;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
 public class UpdateOrder implements Runnable{
@@ -50,12 +51,26 @@ public class UpdateOrder implements Runnable{
                 try {
 
                     FoodOrder foodOrderUpdate = generateObjectFromJSon(jsonMessage,FoodOrder.class);
-                    FoodOrder foodOrderFromDB = mongoDBService.getOrderById(foodOrderUpdate.getId());
+
+                    String redisJsonString = redisService.get(foodOrderUpdate.getId());
+
+                    FoodOrder foodOrderFromDB;
+
+                    if(redisJsonString == null) foodOrderFromDB = mongoDBService.getOrderById(foodOrderUpdate.getId());
+                    else foodOrderFromDB = generateObjectFromJSon(redisJsonString,FoodOrder.class);
+
+
+                    if(foodOrderFromDB == null){
+                        noSuchOrder(foodOrderUpdate.getId());
+                        return;
+                    }
 
                     foodOrderFromDB.setOrderEndTime(foodOrderUpdate.getOrderEndTime());
-                    foodOrderFromDB.setStatus(foodOrderUpdate.getStatus());
+
+                    if(!Objects.equals(foodOrderFromDB.getStatus(), "payed")) foodOrderFromDB.setStatus(foodOrderUpdate.getStatus());
 
                     mongoDBService.updateOrder(foodOrderUpdate.getId(), foodOrderFromDB);
+                    redisService.delete(foodOrderUpdate.getId());
                     redisService.put(foodOrderUpdate.getId(),generateJson(foodOrderFromDB),300);
 
                 } catch (Exception e) {
@@ -72,6 +87,10 @@ public class UpdateOrder implements Runnable{
             System.out.println(e.getMessage());
         }
 
+    }
+
+    private void noSuchOrder(String id){
+        System.out.println("Bad Order Id" + id);
     }
 
     private  <T> T generateObjectFromJSon(String json, Class<T> clazz){

@@ -18,6 +18,8 @@ public class FoodOrder {
     @JsonProperty("orderEndTime")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderEndTime;
+    private Double paymentAmount;
+    private String paymentMethod;
 
     public FoodOrder() {
 
@@ -51,6 +53,14 @@ public class FoodOrder {
         return orderEndTime;
     }
 
+    public Double getPaymentAmount() {
+        return paymentAmount;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -77,5 +87,13 @@ public class FoodOrder {
 
     public void setOrderEndTime(LocalDateTime orderEndTime) {
         this.orderEndTime = orderEndTime;
+    }
+
+    public void setPaymentAmount(Double paymentAmount) {
+        this.paymentAmount = paymentAmount;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 }
