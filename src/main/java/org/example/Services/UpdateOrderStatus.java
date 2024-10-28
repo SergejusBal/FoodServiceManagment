@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
-public class UpdateOrder implements Runnable{
+public class UpdateOrderStatus implements Runnable{
     private String queueName;
     private static final String HOST = "localhost";
     private final ConnectionFactory factory;
@@ -23,7 +23,7 @@ public class UpdateOrder implements Runnable{
     private MongoDBService mongoDBService;
     private RedisService redisService;
 
-    public UpdateOrder(String queueName) {
+    public UpdateOrderStatus(String queueName) {
         this.factory = new ConnectionFactory();
         factory.setHost(HOST);
         factory.setPort(5672);

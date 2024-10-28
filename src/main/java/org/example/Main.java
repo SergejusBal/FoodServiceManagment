@@ -4,7 +4,7 @@ package org.example;
 import org.example.Services.OverDueOrDerTracker;
 import org.example.Services.RegisterOrder;
 import org.example.Services.SetPaymentStatus;
-import org.example.Services.UpdateOrder;
+import org.example.Services.UpdateOrderStatus;
 
 public class Main {
     public static void main(String[] args) {
@@ -13,7 +13,7 @@ public class Main {
         Thread registerOrderThread = new Thread(registerOrder);
         registerOrderThread.start();
 
-        UpdateOrder updateOrder = new UpdateOrder("FoodOrderUpdate");
+        UpdateOrderStatus updateOrder = new UpdateOrderStatus("FoodOrderUpdate");
         Thread updateOrderThread = new Thread(updateOrder);
         updateOrderThread.start();
 
